@@ -1,0 +1,187 @@
+Kubernetes Cheat Sheet
+
+ kubectl run hello-minikube --image=gcr.io/google_containers/echoserver:1.4 --port=8080
+
+ kubectl expose deployment hello-minikube --type=NodePort
+
+ kubectl create -f pod.yml
+
+ kubectl get pod
+
+ kubectl describe pod <pod name>
+
+ kubectl expose pod <pod name> --port=<port no> --name=<service name>
+
+ kubectl port-forward <pod name> <port number>
+
+ kubectl attach <pod name> -i
+
+ kubectl exec <pod name> -- command
+
+ kubectl label pod <pod name> mylabel=<name>
+
+ kubectl run -i --tty busybox --image=busybox --restart=never -- sh
+
+ kubectl scale --replicas=4 rc <controller name>
+
+ kubectl exec POD_NAME -c CONTAINER_NAME reboot
+
+ pod - Its just a container or group of containers which can communicate with each other locally.
+
+ replication controller - Scaling in kubernetes can be done using this. Specified number of pods will run all the time.
+
+ replication sets/deployments - It is next gen replication controller. Deployment  uses replication sets. 
+
+ kubectl get deployments
+
+ kubectl get rs
+
+ kubetcl rollout status deployment/<name>
+
+ kubetcl set image deployment/<name> <image name>=<new image name>:<version>
+
+ kubectl edit deployment/<name>
+
+ kubectl rollout history deployment/<name>
+
+ kubectl rollout undo deployment/<name>
+
+ kubectl rollout undo deployment/<name> --to-revision=n
+
+ services - Pods should never be accesed directly and they should be accessed only through service because of pod scaling.types - clusterIP,LB and NodePort. We can also use DNS names by using ExternalName but only works if we have dns addon.
+
+ labels - key/value pairs attached to resources.They are unique and can have multiple. Label selectors are used to narrow down results. We can use matching expressions to match the label. We can label nodes and can make pod to run on particular node.We can nodeSelector to schedule pods on particular node.
+
+ kubectl label nodes <node name> <key=value>
+
+ Health Check -  To check whther app is running properly even if container is up and running. Liveliness probe and readiness probe. Liveliness probe is to check whther container is running or not and it restarts if healthcheck fails. Readiness probe will not restart container but it removes from the service so that request doesnt go to container.
+
+ POD lifecycle - we can add post start and pre stop steps to container under lifecycle.
+
+ Secrets - Provides a way to distribute secret data to pods.They can be used as volumes and we can mount same to container to use it. After mounting values can be access using <volume>/<key of secret>.
+ kubectl create secret generic db-pass --from-file=<filename> --from-file=<filename>
+ kubectl create secret generic ssl-key --from-file=<key name>=<file name> --from-file=<key name>=<file name>
+
+ WebUI - We can use UI instead of kubectl to deploy and view the details of resources.
+
+ Service Discovery(DNS) - It is builtin service of kubernetes.It can be used within pods to find other services running in same cluster.Containers in the same pod can connect to each other using localhost:<container port>. Service discovery will work only if we create a service for pod. We can connect to other pods using there service names but it can be done only if they are in same name space. Better to use service name to connect to particular service(it resolves only to ip use port if it have anything binded).
+ <name of the service>.<namespace>.svc.cluster.local - dns service lookup
+
+ Configmap - Configuration which is not secret can be put in configmaps.Same like secrets. It can contain full config file and it can be mounted as volume where application is expecting configuration file.After mounting values can be access using <volume>/<key of secret>.
+ kubectl create configmap <name> --from-file=<file>
+
+ kubectl exec -it <pod name> -c <container name> -- <command>
+
+ Ingress - It allows inbound connections to cluster. Alternative to load balancers and Nodeports. It is used to expose services that needs to be accessed from outside cluster.We can write ingress rules to redirect traffic to particular port if ingress is hit.
+
+ External DNS - We can create a LB and route all the traffic to ingress to save costs. External DNS is used for this purpose. Hosts used in ingress rules will read by External DNS and it create records at external DNS respectively.
+
+ Volumes - Allows us to store data outside container.Persistent volumes are attached to container and they are available even if container is lost. They are attached using diff volume plugins. To use aws volumes,nodes should be insame AZ.
+ 
+ kubectl drain <nodename>
+
+ Volume provisioning - Kubernetes have the capbility of provisioning volumes for us.We can create Storage class so that will allow us to claim the volumes on demand.
+
+ Pod presets - It is used to inject kubernetes resources to pod during its runtime.We can use this if we want to inject same config to so many apps/pods.
+
+ Statefulsets(stateful apps with replicas otherwise deployment is better) - It is used to run stateful application sets. Pod name will have sticky identity so that name won't change even if it gets recreated.Usually we cannot have multiple replicas to have same volume so statefulsets are required where they have stable volumes based on there sticky name.If we delete statefulset then we need to delete volume manually.These are used when cluster member neds to know eachother to work so each pod should have static name to know each other. We should create 2 services one is headless for inter cluster communication and other one is to use services.
+
+ Daemonsets - It ensures that every node in kubernetes cluster runs same pod.3 nodes = 3same pods. If we remove a node then pod wont get rescheduled on other nodes.
+
+ Resource usage monitoring(use metric server) - Heapster(depricated) enable container cluster monitoring and performance monitoring.It is monitoring platform in kubernetes. It is a prerequisite if we want to do pod autoscaling.Visualizations are shown using graffana.
+
+ Autoscaling - It is used to scale deployment based on resource utilization. CPU based autoscaling is present out of the box.
+ kubectl autoscale deployment <name> --cpu-percent=50 --min=1 --max=10
+
+ Affinity/Anti Affinity - It is similar to node slector but more complex. It also works for pods. It is not hard like node slector here we have preferrable rules where it will work even if rules aren't met but node selector is not like this.It can work at pod labels. We can create a rule so that no 2 pods will be on same node. We can use weights where nodes with more will be considered.
+ We need to use topology key pods are scheduled based on topologykey matching.
+
+ Taints & Tolerations - It is opposite of node affinity.We can say like pods cannot run on this nodes.Tainta are for nodes and tolerations are for pods.Tolerations can tolerate taints and pods can be scheduled. NoExec will not eic pods from the tainted node and we can add wait time using tolerationSeconds so that it can be evicted after time.
+
+ Custom Resource Definitions - Resources are endpoints in k8s API that store objects. For exmaple deployment is a resource in API. Custom resource can be added to cluster which is not already present.It is used to extend k8s API to add new functionalities.
+
+ Operators - It is a method of packaging, managing and deploying k8s application. It is from coreOS team.It can be managed by CRD.It is used to deploy stateful apps very easily.We need to define CRD before using particular operator.
+
+ The Kubernetes Master - Master will contain kubectl which communicates with Rest after authirization and objects are saved in etcd cluster and then scheduler schedules pods and control manager controls the pods.
+
+ Resource Quotas - We can define resource quotas using namespaces.We can use both limit and request capacity of resources.Admin can sspecify capacity quotas in cluster so that every pod def should have capacity quota.Admin also can set limit for number of k8s resources in a namespace.
+
+ Namespaces - They logically sperate kubernetes cluster.If we define resource quotas in ns then we need to define resources inside pod def otherwise pod creation will fail and we can also define defualt resource quota for a ns.
+ kubectl create namespace <name>
+
+ Users - normal users are used to connect to cluster from outside that is kubectl and service users are used by objects inside cluster.I f a normal user is authenticated then they can do anything. To limit access we need to use authorization.We can use role based authorization control RBAC and we can configure this dynamically by admin.First we need to create a key and crt for every user and add user and his cert and key details to .kube/config file on master to add a user.
+ kubectl set-credentials <Uname> --client-certificate=<crt> --client-key=<key>
+ kubectl set-context <Uname> --cluster=<clustername> --user Uname
+ kubectl config use-context <Uname>  
+
+ RBAC - After authentication authorization will happen . It is enabled by default in the cluster and we can also enable it manually.
+
+ Networking - Pods inside cluster will be able to communicate each other using there ip. For container to container comm cloud providers will handle them but for on premises we need to use container network interface CNI like calico and weave.
+
+ Node Maintainence - Node manager takes care of kubernetes nodes. If we are rebooting a node then first we need to drain the node.
+ kubectl drain <node name> --grace-period=600
+ kubectl uncordon <node name>
+
+ To add node to a cluster manually - kubeadm token create --print-join-command
+
+ HA - all the master services should be in HA for prod. 3 etcd, Replicate API with LB,Multiple schedulers and controllers,kubelets
+
+ Annotations - These are used to enable something on external service provider.
+
+                                                      HELM
+
+ Helm - It is the best way to create,package,share and find software built for kubernetes.Helm client is required to start using helm. Helm init initializes helm on k8s. It will install tiller.If we have RBAC enabled then we need to add service accounts and RBAC rules.Chart is a collection of files that describe set of k8s resources.
+
+ We have values.yaml where we can define variables and use them in helm templates. Variables can be overridden during helm install command. We can override helm values by passing a file with helm values using -f and left most one will have highest priority.
+
+ Helm chart has multiple files:
+ Chart.yaml - info about chart
+ Values.yaml - variable declaration which can be used in templates.
+ Templates/ - Directory where our kubernetes resource yamls are present and they will rendered to k8s based on values we use in them.
+ requirement.yaml -It holds dependencies of helm chart.
+
+ We can use -f or --set with helm to override default configuration of helm chart.
+
+ Helm plugins - Helm plugins are add on tools that integrate seamlessly with helm.
+
+ Requirements.yaml - Dependent charts are declared here.
+ alias - name of dependent chart
+ conditions/tags - these are used to control amd load dependency charts based on values.
+ import-values can be used to import values from child to parent.
+ hooks - These are used to intervene helm install and perform some tasks.
+
+ helm init 
+
+ helm reset 
+
+ helm install --name <custom name> <helm chart name>
+
+ helm search <helm chart name>
+
+ helm list
+
+ helm upgrade 
+
+ helm rollback <helm chart name>
+
+ helm delete <helm chart name>
+
+ helm create <chart name>
+
+ helm repo add <repo name> <repo url>
+
+ helm fetch <chart name>
+
+ helm status <chart name>
+
+ helm inspect values 
+
+ helm lint <chart name>
+
+ helm get manifest <chart name>
+
+ helm install --debug --dry-run <chart name>
+
+ 
+
+

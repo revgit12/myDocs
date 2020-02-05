@@ -1,0 +1,85 @@
+KAFKA
+
+Data pipeline -  Establish connection between two systems. Data flow between systems.
+
+Messaging System - Manages the complexity of the data pipelines. Makes communication simpler and manageable.Platform independent. Asynchronous communication for sending messages.
+
+Kafka decouples data pipelines.
+
+Applications which are sending messages to kafka are called producers.
+
+Applications which are getting messages from kafka are called consumers.
+
+Producer send data to kafka and kafka stores them and consumers can subscribe to kafka and consume them.
+
+We can have multiple subscribers to a single category of messages.
+
+Apache kafka is a distributed publish-suscribe messaging system.
+
+Messaging has queue and publish system. Record goes to only one consumer in queue system whereas record goes to multiple in publish system.
+
+Kafka is distrubuted system with many instances running parallel so it is fast,durable and fault tolerant.
+
+Kafka is also used for real time streaming of data and used to collect big data for real time analysis.
+
+Topic - Its a category or feed name to which records are published. Topics are always multi subscriber in kafka. Topic can have multiple consumers.
+
+Partitions - Topic is again divided into number of partitions. Partitions are used for parellelizing topics. They split data in topic over multiple brokers. Each partition can be placed in a seperate machine to allow multiple consumers to read messages parallely. These are parts of topic over brokers and record in the partition has offset that is id.
+
+Producer publishes the data to topics of its choice.It produces messages to specific topic. It doesnt care about partition and it balances messages over every partition in a topic.
+
+Consumer can subscribe to one topic and consume data. We can have multiple consumers in a consumer group with a name. Recored can be consumed only by one consumer instance in group whereas multiple consumer groups can be subscribed to a topic where instaces from diff groups can get the same record.It can subscribe to one or more topic nd reads messages sequentially. Consumer keeps track of messages by tracking offset of messages so it dont loose the state.
+
+Brokers - They are single machine in a cluster. They are servers.
+
+Zoo Keeper - It stores metadata and info related to kafka cluster and used for managing the kafka server.It elects a controller,cluster membership and topic configuration . Controller is one of the broker and it is responsible for maintaining leader-follwer relation ship for all partitions.
+
+Consumer count in a group should be equal to partition of the topic to which consumer group is subscribed.
+
+Replication factor n can tolerate n-1 server failures.
+
+Kafka streams take data from input  topics and process them and send them to output topics.
+
+Consumer should have topic name,partition number and offset to read a message. Order of consuming can be anything based on offset.
+
+Topic partitions can have replicas but only leader replica will serve until it fails.
+
+Messages is a record with key:value and time stamp. messages are directed to partitions based on key. Messages with same key will go to same partition.
+
+Kafka Feautures:
+ 
+  High throughput
+  Scalability
+  No Data Loss
+  Stream Processing
+  Durability
+  Replication
+
+
+Applications can produce messages to kafka without concerning about format of the messages.
+
+Installation:
+
+Pre-requisites - Java
+Components - Kafka and Zookeeper
+
+Download kafka tar from apache website.
+
+Untar it and set KAFKA_HOME and PATH variables in bash profile.
+
+Start zookeeper by passing zookeeper conf file.
+
+Start kafka broker.
+
+Create a topic using kafkatopic.sh script.
+
+Use --broker-list with producer.
+
+Use --bootstrap-server with consumer.
+
+Clustering in KAFKA:
+
+
+
+
+

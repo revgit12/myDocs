@@ -1,0 +1,571 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<settings>
+    <!-- Maven mirror config guide: http://maven.apache.org/guides/mini/guide-mirror-settings.html -->
+    <!-- <localRepository>/tmp/work/repo1</localRepository> -->
+    <!-- <localRepository>/home/jenkins/aor_mvn</localRepository> -->
+   <!-- <proxies>
+
+        <proxy>
+            <id>optional</id>
+            <active>true</active>
+            <protocol>http</protocol>
+            <host>10.158.100.7</host>
+            <port>8080</port>
+            <nonProxyHosts>*repo.lab.pl.alcatel-lucent.com</nonProxyHosts>
+        </proxy>
+
+        <proxy>
+            <id>optional</id>
+            <active>true</active>
+            <protocol>https</protocol>
+            <host>10.158.100.7</host>
+            <port>8080</port>
+            <nonProxyHosts>*repo.lab.pl.alcatel-lucent.com</nonProxyHosts>
+        </proxy>
+
+    </proxies>-->
+
+    <servers>
+        <server>
+            <id>snapshots</id>
+            <configuration>
+                <wagonProvider>httpclient</wagonProvider>
+            </configuration>
+            <!-- ARTIFACTORY_USERNAME and ARTIFACTORY_PASSWORD strings are replaced
+              during pipeline run -->
+            <username>ARTIFACTORY_USERNAME</username>
+            <password>ARTIFACTORY_PASSWORD</password>
+        </server>
+
+        <server>
+            <id>releases</id>
+            <configuration>
+                <wagonProvider>httpclient</wagonProvider>
+            </configuration>
+            <!-- ARTIFACTORY_USERNAME and ARTIFACTORY_PASSWORD strings are replaced
+              during pipeline run -->
+            <username>ARTIFACTORY_USERNAME</username>
+            <password>ARTIFACTORY_PASSWORD</password>
+        </server>
+
+        <!-- added newly as part of maven deploy -->
+        <server>
+            <id>uiv-mvn-inprogress</id>
+            <username>MAVEN_USERNAME</username>
+            <password>MAVEN_PASSWORD</password>
+        </server>
+
+
+    </servers>
+
+    <mirrors>
+
+        <mirror>
+            <id>mirror2</id>
+            <name>central2</name>
+            <url>https://repo.lab.pl.alcatel-lucent.com/repository-jboss-org/
+            </url>
+            <mirrorOf>central2</mirrorOf>
+        </mirror>
+
+        <mirror>
+            <id>mirror3</id>
+            <name>central</name>
+            <url>https://repo.spring.io/libs-release/
+            </url>
+            <mirrorOf>central3</mirrorOf>
+        </mirror>
+
+        <mirror>
+            <id>mirror4</id>
+            <name>central4</name>
+            <url>https://repo.lab.pl.alcatel-lucent.com/repository_apache_org_snapshots
+            </url>
+            <mirrorOf>central4</mirrorOf>
+        </mirror>
+
+        <mirror>
+            <id>mirror5</id>
+            <name>central5</name>
+            <url>https://repo.lab.pl.alcatel-lucent.com/npm-remote</url>
+            <mirrorOf>central5</mirrorOf>
+        </mirror>
+
+        <mirror>
+            <id>mirror6</id>
+            <name>central6</name>
+            <url>https://repo.lab.pl.alcatel-lucent.com/aado-mvn-dependencies
+            </url>
+            <mirrorOf>central6</mirrorOf>
+        </mirror>
+
+        <mirror>
+            <id>mirror7</id>
+            <name>central7</name>
+            <url>https://repo.lab.pl.alcatel-lucent.com/maven-repository-redhat-com-ga
+            </url>
+            <mirrorOf>central7</mirrorOf>
+        </mirror>
+
+        <mirror>
+            <id>mirror8</id>
+            <name>central8</name>
+            <url>https://repo.lab.pl.alcatel-lucent.com/packages-confluent-io-maven
+            </url>
+            <mirrorOf>central8</mirrorOf>
+        </mirror>
+
+        <mirror>
+            <id>mirror9</id>
+            <name>central9</name>
+            <url>https://repo.lab.pl.alcatel-lucent.com/csf-mvn-delivered</url>
+            <mirrorOf>central9</mirrorOf>
+        </mirror>
+
+        <mirror>
+            <id>mirror10</id>
+            <name>central10</name>
+            <url>https://repo.lab.pl.alcatel-lucent.com/csf-mvn-delivered-local</url>
+            <mirrorOf>central10</mirrorOf>
+        </mirror>
+
+        <mirror>
+            <id>mirror11</id>
+            <name>central11</name>
+            <url>https://repo.lab.pl.alcatel-lucent.com/maven2</url>
+            <mirrorOf>central10</mirrorOf>
+        </mirror>
+
+        <mirror>
+            <id>mirror12</id>
+            <name>central12</name>
+            <url>https://repo.lab.pl.alcatel-lucent.com/jcenter</url>
+            <mirrorOf>central10</mirrorOf>
+        </mirror>
+
+        <mirror>
+            <id>mirror13</id>
+            <name>central13</name>
+            <url>http://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+            <mirrorOf>central13</mirrorOf>
+        </mirror>
+
+        <mirror>
+            <id>mirror1</id>
+            <name>sure-nexus</name>
+            <url>https://repo.lab.pl.alcatel-lucent.com/suredev-nexus</url>
+            <mirrorOf>sure-nexus</mirrorOf>
+        </mirror>
+
+        <mirror>
+            <!--
+              This mirror forces Maven to use the example product unit's dependencies repo to resolve all
+              artifacts except the artifacts the product unit produces and publishes itself to the inpogress,
+              snapshots, candidates, and releases repos.
+
+              To use this settings file it has to be passed via a command-line flag when Maven is invoked:
+
+                mvn -s path/to/settings.xml build
+
+              More details about Maven mirror config can be found here: http://maven.apache.org/guides/mini/guide-mirror-settings.html
+            -->
+            <id>dependencies</id>
+            <name>dependencies</name>
+            <url>https://repo.lab.pl.alcatel-lucent.com/example-mvn-dependencies/</url>
+            <mirrorOf>external:*,!inprogress,!snapshots,!candidates,!releases</mirrorOf>
+        </mirror>
+
+    </mirrors>
+
+    <profiles>
+        <profile>
+            <id>profile1</id>
+            <repositories>
+
+                <repository>
+                    <id>central2</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/repository-jboss-org/
+                    </url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+
+                <repository>
+                    <id>central3</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/maven-repository-redhat-com-techpreview
+                    </url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+
+                <repository>
+                    <id>central4</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/repository_apache_org_snapshots
+                    </url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+
+                <repository>
+                    <id>central5</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/npm-remote</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+
+                <repository>
+                    <id>central6</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/aado-mvn-dependencies
+                    </url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+
+                <repository>
+                    <id>central7</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/maven-repository-redhat-com-ga
+                    </url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>central8</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/packages-confluent-io-maven
+                    </url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+
+                <repository>
+                    <id>central9</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/csf-mvn-delivered</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+
+                <repository>
+                    <id>central10</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/csf-mvn-delivered-local</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+
+                <repository>
+                    <id>central11</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/maven2</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+
+                <repository>
+                    <id>central12</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/jcenter</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+
+                <repository>
+                    <id>central13</id>
+                    <url>http://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+
+                <repository>
+                    <id>sure-nexus</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/suredev-nexus</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+
+            </repositories>
+
+            <pluginRepositories>
+
+                <pluginRepository>
+                    <id>central2</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/pluginRepository-jboss-org/
+                    </url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+
+                <pluginRepository>
+                    <id>central3</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/maven-pluginRepository-redhat-com-techpreview
+                    </url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+
+                <pluginRepository>
+                    <id>central4</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/pluginRepository_apache_org_snapshots
+                    </url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+
+                <pluginRepository>
+                    <id>central5</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/npm-remote</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+
+                <pluginRepository>
+                    <id>central6</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/aado-mvn-dependencies
+                    </url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+
+                <pluginRepository>
+                    <id>central7</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/maven-pluginRepository-redhat-com-ga
+                    </url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+
+                <pluginRepository>
+                    <id>central8</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/packages-confluent-io-maven
+                    </url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+
+                <pluginRepository>
+                    <id>central9</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/csf-mvn-delivered</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+
+                <pluginRepository>
+                    <id>central10</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/csf-mvn-delivered-local</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+
+                <pluginRepository>
+                    <id>central11</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/maven2</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+
+                <pluginRepository>
+                    <id>central12</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/jcenter</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+
+                <pluginRepository>
+                    <id>central13</id>
+                    <url>http://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+
+                <pluginRepository>
+                    <id>sure-nexus</id>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/suredev-nexus</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+
+            </pluginRepositories>
+
+        </profile>
+
+        <profile>
+            <id>profile2</id>
+            <repositories>
+                <repository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <id>central</id>
+                    <name>uiv-mvn-inprogress</name>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/uiv-mvn-inprogress</url>
+                </repository>
+                <repository>
+                    <snapshots/>
+                    <id>snapshots</id>
+                    <name>uiv-mvn-inprogress</name>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/uiv-mvn-inprogress</url>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <id>central</id>
+                    <name>plugins-release</name>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/plugins-release</url>
+                </pluginRepository>
+                <pluginRepository>
+                    <snapshots/>
+                    <id>snapshots</id>
+                    <name>plugins-release</name>
+                    <url>https://repo.lab.pl.alcatel-lucent.com/plugins-release</url>
+                </pluginRepository>
+            </pluginRepositories>
+
+    </profile>
+
+    <profile>
+      <id>csf-artifactory</id>
+      <repositories>
+        <repository>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>central</id>
+          <name>libs-release</name>
+          <url>https://repo.lab.pl.alcatel-lucent.com:443/libs-release</url>
+        </repository>
+        <repository>
+          <snapshots />
+          <id>snapshots</id>
+          <name>libs-snapshot</name>
+          <url>https://repo.lab.pl.alcatel-lucent.com:443/libs-snapshot</url>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>central</id>
+          <name>plugins-release</name>
+          <url>https://repo.lab.pl.alcatel-lucent.com:443/plugins-release</url>
+        </pluginRepository>
+        <pluginRepository>
+          <snapshots />
+          <id>snapshots</id>
+          <name>plugins-snapshot</name>
+          <url>https://repo.lab.pl.alcatel-lucent.com:443/plugins-snapshot</url>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+
+
+    </profiles>
+
+    <activeProfiles>
+        <activeProfile>profile1</activeProfile>
+        <activeProfile>profile2</activeProfile>
+        <activeProfile>csf-artifactory</activeProfile>
+    </activeProfiles>
+</settings>
